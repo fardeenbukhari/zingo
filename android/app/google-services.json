@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "408787402316",
+    "project_id": "zingoo-823df",
+    "storage_bucket": "zingoo-823df.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408787402316:android:93ef148d19bb79448afee9",
+        "android_client_info": {
+          "package_name": "com.zingoo.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaFCsz_nHf0U9mnG8A9KIM9KKjSS7XXVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
