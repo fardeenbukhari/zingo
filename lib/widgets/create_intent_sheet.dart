@@ -2,19 +2,15 @@ import 'package:flutter/material.dart';
 
 class CreateIntentSheet extends StatefulWidget {
   final VoidCallback onClose;
-  final Function(
-    String activity,
-    String description,
-    String skillLevel,
-    int players,
-    int radius,
-  )
+  final Function(String activity, String description, int players, int radius)
   onCreate;
+  final String? initialActivity;
 
   const CreateIntentSheet({
     Key? key,
     required this.onClose,
     required this.onCreate,
+    this.initialActivity,
   }) : super(key: key);
 
   @override
@@ -24,9 +20,16 @@ class CreateIntentSheet extends StatefulWidget {
 class _CreateIntentSheetState extends State<CreateIntentSheet> {
   final _activityController = TextEditingController();
   final _descriptionController = TextEditingController();
-  String _skillLevel = 'Any';
-  int _players = 1;
-  int _radius = 500;
+  int _players = 2;
+  int _radius = 2000;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialActivity != null) {
+      _activityController.text = widget.initialActivity!;
+    }
+  }
 
   @override
   void dispose() {
@@ -41,7 +44,6 @@ class _CreateIntentSheetState extends State<CreateIntentSheet> {
     widget.onCreate(
       _activityController.text.trim(),
       _descriptionController.text.trim(),
-      _skillLevel,
       _players,
       _radius,
     );
@@ -130,6 +132,7 @@ class _CreateIntentSheetState extends State<CreateIntentSheet> {
                       {'name': 'Cricket', 'icon': Icons.sports_cricket},
                       {'name': 'Coffee', 'icon': Icons.coffee},
                       {'name': 'Study', 'icon': Icons.menu_book},
+                      {'name': 'Cab Sharing', 'icon': Icons.local_taxi},
                     ].map((act) {
                       final bool isSelected =
                           _activityController.text == act['name'];
@@ -245,7 +248,7 @@ class _CreateIntentSheetState extends State<CreateIntentSheet> {
                 children: [
                   // Players Input
                   SizedBox(
-                    width: (MediaQuery.of(context).size.width - 64) / 2,
+                    width: double.infinity,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -269,12 +272,12 @@ class _CreateIntentSheetState extends State<CreateIntentSheet> {
                               borderSide: BorderSide.none,
                             ),
                           ),
-                          items: List.generate(10, (index) => index + 1)
+                          items: [2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
                                   child: Text(
-                                    e.toString(),
+                                    '$e',
                                     style: const TextStyle(color: Colors.black),
                                   ),
                                 ),
@@ -282,104 +285,6 @@ class _CreateIntentSheetState extends State<CreateIntentSheet> {
                               .toList(),
                           onChanged: (val) {
                             if (val != null) setState(() => _players = val);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Radius Input
-                  SizedBox(
-                    width: (MediaQuery.of(context).size.width - 64) / 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Radius (m)',
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
-                        ),
-                        const SizedBox(height: 8),
-                        DropdownButtonFormField<int>(
-                          value: _radius,
-                          dropdownColor: const Color(0xFFFFFFFF),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.black.withOpacity(0.04),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          items: [100, 300, 500, 1000]
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(
-                                    '${e}m',
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (val) {
-                            if (val != null) setState(() => _radius = val);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Skill Input (Full Width on small screens if it wraps, otherwise half)
-                  SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Skill Level Required',
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
-                        ),
-                        const SizedBox(height: 8),
-                        DropdownButtonFormField<String>(
-                          value: _skillLevel,
-                          isExpanded: true,
-                          dropdownColor: const Color(0xFFFFFFFF),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.black.withOpacity(0.04),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          items:
-                              [
-                                    'Any',
-                                    'Beginner',
-                                    'Intermediate',
-                                    'Advanced',
-                                    'Expert',
-                                  ]
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(
-                                        e,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (val) {
-                            if (val != null) setState(() => _skillLevel = val);
                           },
                         ),
                       ],

@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -9,6 +10,8 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    if (kIsWeb) return;
+
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings settings = InitializationSettings(
@@ -30,9 +33,11 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
+    if (kIsWeb) return;
+
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-          'zingoo_chat',
+          'pinghood_chat',
           'Chat Messages',
           channelDescription: 'Notifications for new chat messages',
           importance: Importance.max,

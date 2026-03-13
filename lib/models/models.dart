@@ -1,20 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/ping_score_calculator.dart';
 
 class User {
   final String userId;
   final String name;
+  final String email;
   final String avatar;
+  final String? gender;
   final List<String> interests;
+  final int pingPoints;
+  final int intentsCreated;
+  final int intentsJoined;
+  final int totalParticipantsEngaged;
+  final bool isVerified;
+  final bool isAadhaarVerified;
+  final String? linkedAadhaar;
   final Map<String, String> skillLevels;
+
+  final String? organization;
+  final DateTime joinedAt;
 
   User({
     required this.userId,
     required this.name,
+    required this.email,
     required this.avatar,
+    this.gender,
     required this.interests,
-    required this.skillLevels,
+    this.skillLevels = const {},
+    this.pingPoints = 0,
+    this.intentsCreated = 0,
+    this.intentsJoined = 0,
+    this.totalParticipantsEngaged = 0,
+    this.isVerified = false,
+    this.isAadhaarVerified = false,
+    this.linkedAadhaar,
+    this.organization,
+    required this.joinedAt,
   });
+
+  User copyWith({
+    String? userId,
+    String? name,
+    String? email,
+    String? avatar,
+    String? gender,
+    List<String>? interests,
+    int? pingPoints,
+    int? intentsCreated,
+    int? intentsJoined,
+    int? totalParticipantsEngaged,
+    bool? isVerified,
+    bool? isAadhaarVerified,
+    String? linkedAadhaar,
+    String? organization,
+    DateTime? joinedAt,
+    Map<String, String>? skillLevels,
+  }) {
+    return User(
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatar: avatar ?? this.avatar,
+      gender: gender ?? this.gender,
+      interests: interests ?? this.interests,
+      pingPoints: pingPoints ?? this.pingPoints,
+      intentsCreated: intentsCreated ?? this.intentsCreated,
+      intentsJoined: intentsJoined ?? this.intentsJoined,
+      totalParticipantsEngaged:
+          totalParticipantsEngaged ?? this.totalParticipantsEngaged,
+      isVerified: isVerified ?? this.isVerified,
+      isAadhaarVerified: isAadhaarVerified ?? this.isAadhaarVerified,
+      linkedAadhaar: linkedAadhaar ?? this.linkedAadhaar,
+      organization: organization ?? this.organization,
+      skillLevels: skillLevels ?? this.skillLevels,
+      joinedAt: joinedAt ?? this.joinedAt,
+    );
+  }
+
+  int get totalPingPoints {
+    return PingScoreCalculator.calculateScore(
+      joinedAt: joinedAt,
+      intentsCreated: intentsCreated,
+      totalParticipantsEngaged: totalParticipantsEngaged,
+      intentsJoined: intentsJoined,
+    );
+  }
+
+  String get rank => PingScoreCalculator.getRank(totalPingPoints);
+}
+
+class Organization {
+  final String id;
+  final String name;
+  final String domain;
+  final LocationPoint? location;
+
+  Organization({
+    required this.id,
+    required this.name,
+    required this.domain,
+    this.location,
+  });
+
+  factory Organization.fromJson(Map<String, dynamic> json) {
+    return Organization(
+      id: json['id'],
+      name: json['name'],
+      domain: json['domain'],
+      location: json['location'] != null
+          ? LocationPoint.fromJson(json['location'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'domain': domain,
+    'location': location?.toJson(),
+  };
 }
 
 class LocationPoint {
@@ -47,7 +153,6 @@ class ActivityIntent {
   final String status;
   final String? description;
   final List<String> tags;
-  final String skillLevel;
   final List<String> currentParticipants;
 
   ActivityIntent({
@@ -65,7 +170,6 @@ class ActivityIntent {
     required this.status,
     this.description,
     this.tags = const [],
-    this.skillLevel = 'Any',
     this.currentParticipants = const [],
   });
 
@@ -85,7 +189,6 @@ class ActivityIntent {
       status: json['status'],
       description: json['description'],
       tags: List<String>.from(json['tags'] ?? []),
-      skillLevel: json['skillLevel'] ?? 'Any',
       currentParticipants: List<String>.from(json['currentParticipants'] ?? []),
     );
   }
@@ -105,22 +208,21 @@ class ActivityIntent {
     'status': status,
     'description': description,
     'tags': tags,
-    'skillLevel': skillLevel,
     'currentParticipants': currentParticipants,
   };
 
   Color get color {
     switch (activity.toLowerCase()) {
       case 'badminton':
-        return const Color(0xFFFFFFFF); // Pure White
+        return const Color(0xFF1DE9B6); // Brand Green
       case 'hostel':
-        return const Color(0xFF1DE9B6); // Teal
+        return const Color(0xFF7C4DFF); // Deep Purple
       case 'coffee':
-        return const Color(0xFFE0E0E0); // Light Gray
+        return const Color(0xFFFF9100); // Amber/Orange
       case 'study':
-        return const Color(0xFFBDBDBD); // Mid Gray
+        return const Color(0xFF2979FF); // Blue
       default:
-        return const Color(0xFF9E9E9E); // Darker Gray
+        return const Color(0xFF00B0FF); // Light Blue
     }
   }
 }

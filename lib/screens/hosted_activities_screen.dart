@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
 import '../models/models.dart';
 import '../providers/mock_data.dart';
+import 'manage_ride_screen.dart';
 
 class HostedActivitiesScreen extends StatelessWidget {
   const HostedActivitiesScreen({Key? key}) : super(key: key);
@@ -117,8 +118,49 @@ class HostedActivitiesScreen extends StatelessWidget {
                             Colors.white10,
                           ),
                           const SizedBox(width: 8),
-                          _buildChip(intent.skillLevel, Colors.white10),
+                          _buildChip(intent.mode, Colors.white10),
                           const Spacer(),
+                          if (intent.activity.toLowerCase().contains('cab'))
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ManageRideScreen(
+                                        intent: intent,
+                                        currentUserId: currentUser.userId,
+                                        onEndBroadcast: () {
+                                          _firebaseService.expireIntent(
+                                            intent.intentId,
+                                          );
+                                        },
+                                        onLeave: () {
+                                          _firebaseService.leaveIntent(
+                                            intent.intentId,
+                                            currentUser.userId,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.taxi_alert,
+                                  color: Color(0xFF1DE9B6),
+                                  size: 16,
+                                ),
+                                label: const Text(
+                                  'MANAGE RIDE',
+                                  style: TextStyle(
+                                    color: Color(0xFF1DE9B6),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
                           const Text(
                             'LIVE',
                             style: TextStyle(

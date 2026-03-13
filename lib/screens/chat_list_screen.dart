@@ -97,6 +97,11 @@ class _ChatListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isCab = intent.activity.toLowerCase().contains('cab');
+    final String destination =
+        intent.description?.split('\n').first.replaceFirst('To: ', '') ??
+        'Unknown';
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -107,13 +112,13 @@ class _ChatListTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: isCab ? const Color(0xFF1A1A1A) : Colors.white,
+          borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -132,18 +137,27 @@ class _ChatListTile extends StatelessWidget {
                   right: 0,
                   bottom: 0,
                   child: Container(
-                    width: 18,
-                    height: 18,
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1DE9B6),
+                      color: isCab
+                          ? const Color(0xFFFFD600)
+                          : const Color(0xFF1DE9B6),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(
+                        color: isCab ? const Color(0xFF1A1A1A) : Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      isCab ? Icons.local_taxi : Icons.circle,
+                      size: isCab ? 10 : 8,
+                      color: isCab ? Colors.black : Colors.white,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,20 +166,24 @@ class _ChatListTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        intent.activity.toUpperCase(),
-                        style: const TextStyle(
+                        isCab ? 'CAB SHARING' : intent.activity.toUpperCase(),
+                        style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.2,
-                          color: Color(0xFF1DE9B6),
+                          color: isCab
+                              ? const Color(0xFFFFD600)
+                              : const Color(0xFF1DE9B6),
                         ),
                       ),
-                      const Text(
+                      Text(
                         'LIVE',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black26,
+                          color: isCab
+                              ? Colors.redAccent.withOpacity(0.8)
+                              : Colors.black26,
                         ),
                       ),
                     ],
@@ -173,12 +191,23 @@ class _ChatListTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     intent.userName,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: isCab ? Colors.white : Colors.black,
                     ),
                   ),
+                  if (isCab) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'TO: ${destination.toUpperCase()}',
+                      style: const TextStyle(
+                        color: Color(0xFFFFD600),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 4),
                   StreamBuilder<int>(
                     stream: FirebaseService().getUnreadCount(
@@ -191,10 +220,10 @@ class _ChatListTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              'Group with ${intent.currentParticipants.length + 1} participants',
-                              style: const TextStyle(
+                              '${intent.currentParticipants.length + 1} participants in group',
+                              style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.black45,
+                                color: isCab ? Colors.white38 : Colors.black45,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -207,13 +236,15 @@ class _ChatListTile extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF1DE9B6),
+                                color: isCab
+                                    ? const Color(0xFFFFD600)
+                                    : const Color(0xFF1DE9B6),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 count.toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: isCab ? Colors.black : Colors.white,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -226,7 +257,11 @@ class _ChatListTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Colors.black12),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right,
+              color: isCab ? Colors.white24 : Colors.black12,
+            ),
           ],
         ),
       ),

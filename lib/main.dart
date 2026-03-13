@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'screens/login_screen.dart';
+import 'widgets/auth_wrapper.dart';
 import 'services/notification_service.dart';
 
 void main() async {
@@ -14,27 +14,44 @@ void main() async {
   } catch (e) {
     debugPrint('Initialization failed: $e');
   }
-  runApp(const ZingooApp());
+  runApp(const MapPingrApp());
 }
 
-class ZingooApp extends StatelessWidget {
-  const ZingooApp({Key? key}) : super(key: key);
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
+class MapPingrApp extends StatelessWidget {
+  const MapPingrApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Zingoo',
+      title: 'MapPingr',
+      scaffoldMessengerKey: scaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: const Color(0xFFFBFBFB), // Soft white
-        colorScheme: const ColorScheme.light(
-          primary: Color(0xFF121212), // Matte Black for high contrast
-          secondary: Color(0xFF626262), // Gray for sub-elements
-          surface: Color(0xFFFFFFFF), // Pure White surfaces
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Inter',
+        scaffoldBackgroundColor: const Color(0xFFFBFBFB),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF1DE9B6),
+          primary: const Color(0xFF121212),
+          secondary: const Color(0xFF1DE9B6),
+          surface: Colors.white,
         ),
-        textTheme: ThemeData.light().textTheme.apply(fontFamily: 'Inter'),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          titleLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          bodyMedium: TextStyle(color: Colors.black87),
+        ),
       ),
-      home: const LoginScreen(),
+      home: const AuthWrapper(),
     );
   }
 }

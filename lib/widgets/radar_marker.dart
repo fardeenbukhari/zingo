@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
 class RadarMarker extends StatefulWidget {
@@ -48,18 +49,20 @@ class _RadarMarkerState extends State<RadarMarker>
           return Stack(
             alignment: Alignment.center,
             children: [
-              // Expanding ring
-              Container(
-                width: 32 + (_controller.value * 48),
-                height: 32 + (_controller.value * 48),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: widget.color.withOpacity(1 - _controller.value),
-                    width: 2,
+              // Multiple expanding rings for depth
+              for (int i = 0; i < 3; i++)
+                Opacity(
+                  opacity: (1 - ((_controller.value + (i * 0.33)) % 1)) * 0.5,
+                  child: Container(
+                    width: 32 + ((((_controller.value + (i * 0.33)) % 1)) * 60),
+                    height:
+                        32 + ((((_controller.value + (i * 0.33)) % 1)) * 60),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: widget.color, width: 1.5),
+                    ),
                   ),
                 ),
-              ),
               // Avatar part
               if (widget.avatarUrl != null)
                 Positioned(
@@ -75,7 +78,8 @@ class _RadarMarkerState extends State<RadarMarker>
                     ),
                     child: CircleAvatar(
                       radius: 14,
-                      backgroundImage: widget.avatarUrl!.startsWith('http')
+                      backgroundImage:
+                          widget.avatarUrl!.startsWith('http') || kIsWeb
                           ? NetworkImage(widget.avatarUrl!) as ImageProvider
                           : FileImage(File(widget.avatarUrl!)),
                     ),
@@ -83,16 +87,16 @@ class _RadarMarkerState extends State<RadarMarker>
                 ),
               // Inner solid dot with the number
               Container(
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                   border: Border.all(color: widget.color, width: 2),
                   boxShadow: [
                     BoxShadow(
-                      color: widget.color.withOpacity(0.5),
-                      blurRadius: 10,
+                      color: widget.color.withOpacity(0.3),
+                      blurRadius: 15,
                       spreadRadius: 2,
                     ),
                   ],
@@ -102,8 +106,8 @@ class _RadarMarkerState extends State<RadarMarker>
                   '${widget.number}',
                   style: TextStyle(
                     color: widget.color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13,
                   ),
                 ),
               ),
@@ -123,7 +127,10 @@ class UserLocationMarker extends StatefulWidget {
     Key? key,
     this.avatarUrl,
     this.hasBroadcast = false,
+    this.onTap,
   }) : super(key: key);
+
+  final VoidCallback? onTap;
 
   @override
   _UserLocationMarkerState createState() => _UserLocationMarkerState();
@@ -150,111 +157,97 @@ class _UserLocationMarkerState extends State<UserLocationMarker>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 80,
-      height: 80,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              // Outer Pulsing Glow
-              Container(
-                width: 16 + (_controller.value * 24),
-                height: 16 + (_controller.value * 24),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blueAccent.withOpacity(
-                    (1 - _controller.value) * 0.3,
-                  ),
-                ),
-              ),
-              // Solid Center Core
-              Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueAccent.withOpacity(0.5),
-                      blurRadius: 6,
-                    ),
-                  ],
-                ),
-              ),
-
-              // Broadcast Blimp for Self (Positioned Above the dot)
-              if (widget.hasBroadcast && widget.avatarUrl != null)
-                Positioned(
-                  bottom: 45, // Moved up above center
-                  child: Container(
-                    width: 32,
-                    height: 32,
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: SizedBox(
+        width: 80,
+        height: 80,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                // Multi-layered Pulsing Background
+                for (int i = 0; i < 2; i++)
+                  Container(
+                    width: 16 + (((_controller.value + (i * 0.5)) % 1) * 40),
+                    height: 16 + (((_controller.value + (i * 0.5)) % 1) * 40),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.blueAccent, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: Image.network(
-                        widget.avatarUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[200],
-                          child: const Icon(
-                            Icons.person,
-                            size: 16,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
+                      color: const Color(0xFF1DE9B6).withOpacity(
+                        (1 - ((_controller.value + (i * 0.5)) % 1)) * 0.4,
                       ),
                     ),
                   ),
-                ),
-
-              // Label for Self
-              Positioned(
-                bottom: 30, // Just above the dot
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
+                // Solid Center Core
+                Container(
+                  width: 14,
+                  height: 14,
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(6),
+                    color: const Color(0xFF1DE9B6),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 2,
+                        color: const Color(0xFF1DE9B6).withOpacity(0.6),
+                        blurRadius: 10,
                       ),
                     ],
                   ),
-                  child: const Text(
-                    'ME',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                ),
+
+                // Label for Self
+                Positioned(
+                  bottom: 32, // Just above the dot
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.hasBroadcast) ...[
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF1DE9B6),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        const Text(
+                          'YOU',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

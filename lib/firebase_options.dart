@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
@@ -44,39 +41,65 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBSSAHPVAZ-fd4gJmsLji1GqLvft7ExKlg',
-    appId: '1:408787402316:web:dcd1a5a610b54d078afee9',
-    messagingSenderId: '408787402316',
-    projectId: 'zingoo-823df',
-    authDomain: 'zingoo-823df.firebaseapp.com',
-    storageBucket: 'zingoo-823df.firebasestorage.app',
-    measurementId: 'G-JEP7P48GH1',
+    apiKey: 'AIzaSyBIf9LyrWtXjq655ArH0yf9y3UloRWTrY4',
+    appId: '1:570546906315:web:6351498cfedd8b1f79e74e',
+    messagingSenderId: '570546906315',
+    projectId: 'mappingr-d8942',
+    authDomain: 'mappingr-d8942.firebaseapp.com',
+    storageBucket: 'mappingr-d8942.firebasestorage.app',
+    measurementId: 'G-B1W51DQ0W7',
   );
+
+  // ── Web ──────────────────────────────────────────────────────────────────
+
+  // ── Android ──────────────────────────────────────────────────────────────
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCaFCsz_nHf0U9mnG8A9KIM9KKjSS7XXVs',
-    appId: '1:408787402316:android:93ef148d19bb79448afee9',
-    messagingSenderId: '408787402316',
-    projectId: 'zingoo-823df',
-    storageBucket: 'zingoo-823df.firebasestorage.app',
+    apiKey: 'AIzaSyC6hVMw8ThViwPKH36Ph7isYQNKGz-ptHY',
+    appId: '1:570546906315:android:74425553c661f93779e74e',
+    messagingSenderId: '570546906315',
+    projectId: 'mappingr-d8942',
+    storageBucket: 'mappingr-d8942.firebasestorage.app',
   );
 
+  // TODO: replace appId with the real value from google-services.json
+
+  // ── iOS ──────────────────────────────────────────────────────────────────
+
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBTmqyrwORjbKtFFMaRoJhsUmXZoEVLmlU',
-    appId: '1:408787402316:ios:3ceaeb7d8964e1e78afee9',
-    messagingSenderId: '408787402316',
-    projectId: 'zingoo-823df',
-    storageBucket: 'zingoo-823df.firebasestorage.app',
+    apiKey: 'AIzaSyDpxlas-blcwigh-w120kNvwy66pTr03Co',
+    appId: '1:570546906315:ios:dd6efdfae06825a979e74e',
+    messagingSenderId: '570546906315',
+    projectId: 'mappingr-d8942',
+    storageBucket: 'mappingr-d8942.firebasestorage.app',
+    androidClientId: '570546906315-2pdujl9vfqtjcun1e7l78hk0gp3t4fdf.apps.googleusercontent.com',
+    iosClientId: '570546906315-9scaqldmb8qc66bl26lugb67dghsocjt.apps.googleusercontent.com',
     iosBundleId: 'com.zingoo.app',
   );
 
+  // TODO: replace appId with the real value from GoogleService-Info.plist
+
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBSSAHPVAZ-fd4gJmsLji1GqLvft7ExKlg',
-    appId: '1:408787402316:web:baf9e716bb8f22968afee9',
-    messagingSenderId: '408787402316',
-    projectId: 'zingoo-823df',
-    authDomain: 'zingoo-823df.firebaseapp.com',
-    storageBucket: 'zingoo-823df.firebasestorage.app',
-    measurementId: 'G-87B2W2K1D1',
+    apiKey: 'AIzaSyBIf9LyrWtXjq655ArH0yf9y3UloRWTrY4',
+    appId: '1:570546906315:web:8303fe2deb5ffe8379e74e',
+    messagingSenderId: '570546906315',
+    projectId: 'mappingr-d8942',
+    authDomain: 'mappingr-d8942.firebaseapp.com',
+    storageBucket: 'mappingr-d8942.firebasestorage.app',
+    measurementId: 'G-0V26M6K7PD',
   );
+
+  // ── Windows (uses web config) ─────────────────────────────────────────────
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDpxlas-blcwigh-w120kNvwy66pTr03Co',
+    appId: '1:570546906315:ios:1841607a95d1515579e74e',
+    messagingSenderId: '570546906315',
+    projectId: 'mappingr-d8942',
+    storageBucket: 'mappingr-d8942.firebasestorage.app',
+    androidClientId: '570546906315-2pdujl9vfqtjcun1e7l78hk0gp3t4fdf.apps.googleusercontent.com',
+    iosClientId: '570546906315-na5va7hli55po53o886mqpatfha4mvfi.apps.googleusercontent.com',
+    iosBundleId: 'com.example.playradar',
+  );
+
 }

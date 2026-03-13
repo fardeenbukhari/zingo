@@ -3,9 +3,11 @@ import '../models/models.dart';
 User currentUser = User(
   userId: "guest_user",
   name: "Guest",
-  avatar: "https://i.pravatar.cc/150?u=zingo_guest",
+  email: "guest@sharda.ac.in",
+  avatar: "", // Default person icon until Google Sync
   interests: ["Exploration", "Social", "Events"],
-  skillLevels: {},
+  pingPoints: 120,
+  joinedAt: DateTime.now().subtract(const Duration(days: 30)),
 );
 
 final mockLocation = LocationPoint(

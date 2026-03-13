@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../models/models.dart';
 import '../services/firebase_service.dart';
 import '../providers/mock_data.dart';
+import 'manage_ride_screen.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final ActivityIntent intent;
@@ -102,6 +103,33 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ],
         ),
+        actions: [
+          if (widget.intent.userId == currentUser.userId &&
+              widget.intent.activity.toLowerCase().contains('cab'))
+            IconButton(
+              icon: const Icon(Icons.manage_accounts, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ManageRideScreen(
+                      intent: widget.intent,
+                      currentUserId: currentUser.userId,
+                      onEndBroadcast: () {
+                        _firebaseService.expireIntent(widget.intent.intentId);
+                      },
+                      onLeave: () {
+                        _firebaseService.leaveIntent(
+                          widget.intent.intentId,
+                          currentUser.userId,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
       body: Column(
         children: [
